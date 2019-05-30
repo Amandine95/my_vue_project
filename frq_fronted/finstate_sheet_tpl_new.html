@@ -105,39 +105,42 @@
 								sheetDatas: {}
 							}
 						},
-						methods:{
-							
-						},
 						created(){
-							axios({
-								method: "GET",
-								url:'http://localhost:9999/rest/finstate/sheet'
-								// url: '/rest/finstate/sheet' + '?' + getEQString(),
-								// data: {
-								// 	id: QueryString()['id'],
-								// 	user_id: QueryString()['user_id'],
-								// 	_r: Math.random()
-								// },
-							}).then(response =>{
-								if (response){
-									this.sheetDatas = response.data;
-									console.log(this.sheetDatas);
-									this.sheetDatas.pors.forEach((item,index)=>{
-									  item.por_text = item.por + this.por_type_map[item.por_type];
-									  //console.log(this.sheetDatas[item.por_key].stmt_type_list)
-									  var stmt_type_list_chinses = []
-									  this.sheetDatas[item.por_key].stmt_type_list = this.sheetDatas[item.por_key].stmt_type_list.sort();
-									  this.sheetDatas[item.por_key].stmt_type_list.forEach((citem,cindex)=>{
-									    var st = citem.split("_");
-									    stmt_type_list_chinses.push(this.stmt_type_map[st[1]]+this.stmt_type_map[st[2]])
-									  });
-									  this.sheetDatas[item.por_key].stmt_type_list_chinses = stmt_type_list_chinses
-									});
-									this.tab1 = this.sheetDatas.pors[0].por_key;
-									this.tab2 = this.sheetDatas[this.tab1].stmt_type_list[0]
-									
-								}
-							})
+							this.fetchData();
+						},
+						methods:{
+							fetchData:function(){
+								axios({
+									method: "GET",
+									url:'http://localhost:9999/rest/finstate/sheet?id=eb78d48f-82a5-11e9-a6e4-1c1b0d294a0d'
+									// url: '/rest/finstate/sheet' + '?' + getEQString(),
+									// data: {
+									// 	id: QueryString()['id'],
+									// 	user_id: QueryString()['user_id'],
+									// 	_r: Math.random()
+									// },
+								}).then(response =>{
+									if (response){
+										this.sheetDatas = response.data.data;
+										console.log(this.sheetDatas);
+										this.sheetDatas.pors.forEach((item,index)=>{
+										  item.por_text = item.por + this.por_type_map[item.por_type];
+										  //console.log(this.sheetDatas[item.por_key].stmt_type_list)
+										  var stmt_type_list_chinses = []
+										  this.sheetDatas[item.por_key].stmt_type_list = this.sheetDatas[item.por_key].stmt_type_list.sort();
+										  this.sheetDatas[item.por_key].stmt_type_list.forEach((citem,cindex)=>{
+										    var st = citem.split("_");
+										    stmt_type_list_chinses.push(this.stmt_type_map[st[1]]+this.stmt_type_map[st[2]])
+										  });
+										  this.sheetDatas[item.por_key].stmt_type_list_chinses = stmt_type_list_chinses
+										});
+										this.tab1 = this.sheetDatas.pors[0].por_key;
+										this.tab2 = this.sheetDatas[this.tab1].stmt_type_list[0]
+										
+									}
+								})
+							}
+							
 						},
 						watch:{
 							tab1_tab2: {
