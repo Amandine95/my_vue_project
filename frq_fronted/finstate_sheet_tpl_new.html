@@ -1,0 +1,177 @@
+<!-- <!DOCTYPE html>
+<html> -->
+	<!-- <head>
+		
+	</head>
+	<body> -->
+		<div class="tabbable tabbable-custom boxless" style="padding-bottom:80px;" id="contain">
+		    <showtable v-show="display"></showtable>
+		</div>
+		<link rel="stylesheet" href="./static/iview.3.4.2.css">
+		<script src="./static/vue.min.2.6.10.js"></script>
+		<script src="./static/axios.min.js"></script>
+		<script src="./static/iview.min.3.4.2.js"></script>
+		<script src="./static/zh-CN.js"></script>
+		<script>
+		    iview.lang('zh-CN');
+		</script>
+		
+		<script>
+		    var v = new Vue({
+				el:'#contain',
+				data:{
+					display:true
+				},
+				methods:{},
+				components:{
+					'showtable':{
+						template:'<div style="background:#eee;padding: 2px 20px">\n' +
+                ' \n' +
+                '    <Row style="margin-top: 10px;">\n' +
+                '      <Col>\n' +
+                '       \n' +
+                '            <Collapse v-model="value1" style="background:white;">\n' +
+                '              <Panel name="1">\n' +
+                '                  <font size="3" class="sub-bac">报表结果</font>\n' +
+                '                  <p slot="content" style="margin-left: 20px">\n' +
+                '                    <ul>\n' +
+                '                      <li v-for="item,index in warning">\n' +
+                '                   \n' +
+                '                        科目<span class="sub-bac">{{item.formular_name}}</span> 的\n' +
+                '                        <span class="sub-bac" v-if="item.prop==\'start\'">期初金额</span>\n' +
+                '                        <span class="sub-bac" v-if="item.prop==\'end\'">期末金额</span>\n' +
+                '                        <span class="sub-bac" v-if="item.prop==\'total\'">累计金额</span>\n' +
+                '                        <span class="sub-bac" v-if="item.prop==\'previous\'">上期金额</span>\n' +
+                '                        <span class="sub-bac" v-if="item.prop==\'current\'">本期金额</span>\n' +
+                '                        不平，报表值为：<span class="sub-bac">{{item.left_value}}</span>,\n' +
+                '                        计算值为：<span class="sub-bac">{{item.right_value}}</span>\n' +
+                '                      </li>\n' +
+                '                    </ul>\n' +
+                '                  </p>\n' +
+                '              </Panel>\n' +
+                '          </Collapse>\n' +
+                '      </Col>\n' +
+                '    </Row>\n' +
+                '    <Row style="margin-top: 10px;">\n' +
+                '      <Col>\n' +
+                '        <Card :bordered="false">\n' +
+                '          <div style="text-align: left">\n' +
+                '            <p>请核对以下报表内容, 您可以点击相应的单元格, 修改报表数据, 以及属期和表头等信息。\n' +
+                '              确认无误后, 请点击下面"提交报表"按钮, 保存报表。</p>\n' +
+                '          </div>\n' +
+           
+                '        </Card>\n' +
+                '      </Col>\n' +
+                '    </Row>\n' +
+                '    <Row style="margin-top: 10px;">\n' +
+                '      <Col>\n' +
+                '        <Card :bordered="false">\n' +
+                '          <Tabs v-model="tab1">\n' +
+                '            <TabPane :name="item.por_key" :label="item.por_text" :key="index" v-for="(item,index) in sheetDatas.pors">\n' +
+                '              <Tabs v-model="tab2">\n' +
+                '                <TabPane :name="citem" :label=sheetDatas[item.por_key].stmt_type_list_chinses[cindex] :key=cindex v-for="(citem,cindex) in sheetDatas[item.por_key].stmt_type_list">\n' +
+                '                  <fin-table :tableData=sheetDatas[item.por_key][citem] :sheetDatas="sheetDatas" :por_key="item.por_key" :stmt_type_key="citem" :stmt_type="sheetDatas[item.por_key][citem][\'stmt_type\']" :period="item.por,citem" :subject_list=sheetDatas.subject_list>\n' +
+                '                   \n' +
+                '                  </fin-table>\n' +
+                '                  \n' +
+                '                </TabPane>\n' +
+                '              </Tabs>\n' +
+                '            </TabPane>\n' +
+                '          </Tabs>\n' +
+                '        </Card>\n' +
+                '      </Col>\n' +
+                '    </Row>\n' +
+                '  </div>',
+						data(){
+							return{
+								tab1:'',
+								tab2: '',
+								value1: '111',
+								warning: 'warning',
+								listType: false,
+								listShow: false,
+								por_type_map:{
+								  "year":"年报",
+								  "month":"月报"
+								},
+								stmt_type_map:{
+								  "bs":"资产负债表",
+								  "pl": "利润表",
+								  "cf": "现金流量表",
+								  "0": "",
+								  "1": "（母公司）",
+								  "2": "（合并）"
+								},
+								sheetDatas: {}
+							}
+						},
+						methods:{
+							
+						},
+						created(){
+							axios({
+								method: "GET",
+								url:'http://localhost:9999/rest/finstate/sheet'
+								// url: '/rest/finstate/sheet' + '?' + getEQString(),
+								// data: {
+								// 	id: QueryString()['id'],
+								// 	user_id: QueryString()['user_id'],
+								// 	_r: Math.random()
+								// },
+							}).then(response =>{
+								if (response){
+									this.sheetDatas = response.data;
+									console.log(this.sheetDatas);
+									this.sheetDatas.pors.forEach((item,index)=>{
+									  item.por_text = item.por + this.por_type_map[item.por_type];
+									  //console.log(this.sheetDatas[item.por_key].stmt_type_list)
+									  var stmt_type_list_chinses = []
+									  this.sheetDatas[item.por_key].stmt_type_list = this.sheetDatas[item.por_key].stmt_type_list.sort();
+									  this.sheetDatas[item.por_key].stmt_type_list.forEach((citem,cindex)=>{
+									    var st = citem.split("_");
+									    stmt_type_list_chinses.push(this.stmt_type_map[st[1]]+this.stmt_type_map[st[2]])
+									  });
+									  this.sheetDatas[item.por_key].stmt_type_list_chinses = stmt_type_list_chinses
+									});
+									this.tab1 = this.sheetDatas.pors[0].por_key;
+									this.tab2 = this.sheetDatas[this.tab1].stmt_type_list[0]
+									
+								}
+							})
+						},
+						watch:{
+							tab1_tab2: {
+							  handler: function(curVal,oldVal) {
+							
+							    this.warning = this.sheetDatas[curVal.tab1][curVal.tab2].validation.error
+							    
+							  },
+							  deep: true
+							}
+						},
+						computed:{
+							tab1_tab2() {
+							  const { tab1, tab2 } = this
+							  return {
+							    tab1,
+							    tab2
+							  }
+							}
+						},
+					}
+				},
+			})
+		</script>
+		
+	<!-- </body> -->
+<!-- </html> -->
+
+
+
+
+
+
+
+
+
+

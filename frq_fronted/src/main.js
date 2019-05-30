@@ -5,12 +5,15 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import store from './store'  // 引入store
+import Iview from 'iview'  // 引入iview
+import 'iview/dist/styles/iview.css'
 axios.defaults.withCredentials = true;  //允许携带cookies
 
 Vue.config.productionTip = false
 
 Vue.prototype.$ajax=axios
 Vue.prototype.HOST='/api'
+Vue.use(Iview)
 
 
 /* eslint-disable no-new */

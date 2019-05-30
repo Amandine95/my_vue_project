@@ -11,13 +11,13 @@ Vue.use(Router)
 export default new Router({
   routes: [
 
-// 		{
-// 			path:'/',
-// 			name:'SheetResult',
-// 			component:SheetResult
-// 		},
 		{
 			path:'/',
+			name:'SheetResult',
+			component:SheetResult
+		},
+		{
+			path:'/parent',
 			name:'Parent',
 			component:Parent
 		}
